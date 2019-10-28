@@ -5,12 +5,13 @@
     <string name="sign_up_with_email">Sign Up with email address</string>
     <string name="reset_password">Reset Password</string>
 
-    <string name="username">Username</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="password_confirm">Confirm password</string>
 
-    <string name="password_reset">Reset password</string>
+    <string name="please_wait">Please wait</string>
+    <string name="creating_account">Creating account…</string>
+
     <string name="register">Sign Up</string>
     <string name="login">Sign In</string>
     <string name="logout">Sign Out</string>
