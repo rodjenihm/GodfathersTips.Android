@@ -6,12 +6,11 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
-import android.view.View;
 
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
-import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.rodjenihm.godfatherstips.R;
 import com.rodjenihm.godfatherstips.fragment.ResetPasswordFragment;
 import com.rodjenihm.godfatherstips.fragment.SignInFragment;
@@ -32,6 +31,7 @@ public class AuthActivity extends AppCompatActivity {
     private void configureMaterialDrawer() {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         PrimaryDrawerItem itemSignIn =
                 new PrimaryDrawerItem()
@@ -42,19 +42,24 @@ public class AuthActivity extends AppCompatActivity {
         PrimaryDrawerItem itemSignUp =
                 new PrimaryDrawerItem()
                         .withIdentifier(2)
-                        .withName(R.string.sign_up)
+                        .withName(R.string.sign_up_with_email)
                         .withTextColor(getResources().getColor(R.color.colorText));
 
         PrimaryDrawerItem itemResetPassword =
                 new PrimaryDrawerItem()
                         .withIdentifier(3)
-                        .withName(R.string.sign_up)
+                        .withName(R.string.reset_password)
                         .withTextColor(getResources().getColor(R.color.colorText));
 
         result = new DrawerBuilder()
                 .withActivity(this)
                 .withToolbar(toolbar)
-                .addDrawerItems(itemSignIn, itemSignUp, itemResetPassword)
+                .addDrawerItems(
+                        itemSignIn,
+                        new DividerDrawerItem(),
+                        itemSignUp,
+                        new DividerDrawerItem(),
+                        itemResetPassword)
                 .withSliderBackgroundColor(getResources().getColor(R.color.colorBackground))
                 .withOnDrawerItemClickListener((view, position, drawerItem) -> selectAuthItem(((int) drawerItem.getIdentifier())))
                 .build();
