@@ -62,4 +62,34 @@ public class AppUser {
     public void setEmailVerified(boolean emailVerified) {
         isEmailVerified = emailVerified;
     }
+
+    public AppUser withUserId(String userId) {
+        this.userId = userId;
+        return this;
+    }
+
+    public AppUser withEmail(String email) {
+        this.email = email;
+        return this;
+    }
+
+    public AppUser withEmailVerified(boolean isEmailVerified) {
+        this.isEmailVerified = isEmailVerified;
+        return this;
+    }
+
+    public AppUser withCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
+        return this;
+    }
+
+    public AppUser withRoles(List<String> roles) {
+        this.roles = roles;
+        return this;
+    }
+
+    public AppUser withRole(String role) {
+        this.roles.add(role);
+        return this;
+    }
 }

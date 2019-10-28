@@ -19,6 +19,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.rodjenihm.godfatherstips.R;
+import com.rodjenihm.godfatherstips.model.AppUser;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -107,7 +108,10 @@ public class SignUpFragment extends Fragment {
 
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnSuccessListener(authResult -> {
+                    String Uid = mAuth.getCurrentUser().getUid();
 
+                    // Create helper user because default FirebaseUser su*ks and cannot be customized
+                    AppUser user = new AppUser();
                 })
                 .addOnFailureListener(e -> {
 
