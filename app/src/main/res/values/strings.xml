@@ -4,12 +4,15 @@
     <string name="sign_in">Sign In</string>
     <string name="sign_up_with_email">Sign Up with email address</string>
     <string name="reset_password">Reset Password</string>
+    <string name="sign_out">Sign Out</string>
 
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="password_confirm">Confirm password</string>
 
     <string name="please_wait">Please wait</string>
+    <string name="loading_data">Loading application data…</string>
+    <string name="loading_data_error">Error loading application data…</string>
     <string name="creating_account">Creating account…</string>
     <string name="signing_in">Signing In…</string>
     <string name="error">Error</string>
@@ -40,6 +43,15 @@
     <string name="password_confirm_required">Confirm password</string>
     <string name="password_confirm_invalid">Passwords don\'t match</string>
 
+    //
+    <string name="identity">Identity</string>
+    <string name="drawer_item_home">Home</string>
+    <string name="drawer_item_tips">Tips</string>
+    <string name="drawer_item_tips_hot">New tips</string>
+    <string name="drawer_item_tips_history">Tips history</string>
+    <string name="drawer_item_about">About</string>
+    <string name="drawer_item_contact">Contact</string>
+    <string name="drawer_item_share">Share</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
