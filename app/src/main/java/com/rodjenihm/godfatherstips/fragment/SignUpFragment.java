@@ -12,13 +12,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.AuthResult;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.rodjenihm.godfatherstips.R;
+import com.rodjenihm.godfatherstips.Utilities;
 import com.rodjenihm.godfatherstips.model.AppUser;
 
 /**
@@ -26,6 +31,8 @@ import com.rodjenihm.godfatherstips.model.AppUser;
  */
 public class SignUpFragment extends Fragment {
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private final FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+
 
     private EditText emailView;
     private EditText passwordView;
@@ -111,11 +118,73 @@ public class SignUpFragment extends Fragment {
                     String Uid = mAuth.getCurrentUser().getUid();
 
                     // Create helper user because default FirebaseUser su*ks and cannot be customized
-                    AppUser user = new AppUser();
+                    AppUser user = new AppUser()
+                            .withUserId(Uid)
+                            .withEmail(email)
+                            .withEmailVerified(true)
+                            .withCreatedAt(Timestamp.now())
+                            .withRole("MEMBER");
+
+                    firestore.collection("users")
+                            .document(Uid)
+                            .set(user)
+                            .addOnSuccessListener(aVoid -> {
+                                // Add user to MEMBER role by default
+                                firestore.collection("roles")
+                                        .document("MEMBER")
+                                        .update("users", FieldValue.arrayUnion(Uid))
+                                        .addOnSuccessListener(aVoid1 -> {
+                                            dlg.dismiss();
+                                            Utilities.showAlertDialog(
+                                                    getContext(),
+                                                    getResources().getString(R.string.creating_account_success),
+                                                    getResources().getString(R.string.email_confirm_require),
+                                                    () -> {
+                                                        clearRegisterFormData();
+                                                        sendVerificationEmail(mAuth.getCurrentUser());
+                                                    });
+                                        })
+                                        .addOnFailureListener(e -> {
+                                            dlg.dismiss();
+                                            Utilities.showAlertDialog(
+                                                    getContext(),
+                                                    getResources().getString(R.string.creating_role_failure),
+                                                    e.getLocalizedMessage(),
+                                                    () -> deleteUser(mAuth.getCurrentUser()));
+                                        });
+                            })
+                            .addOnFailureListener(e -> {
+                                dlg.dismiss();
+                                Utilities.showAlertDialog(
+                                        getContext(),
+                                        getResources().getString(R.string.creating_user_failure),
+                                        e.getLocalizedMessage(),
+                                        () -> deleteUser(mAuth.getCurrentUser()));
+                            });
                 })
                 .addOnFailureListener(e -> {
-
+                    dlg.dismiss();
+                    Utilities.showAlertDialog(
+                            getContext(),
+                            getResources().getString(R.string.creating_account_failure),
+                            e.getLocalizedMessage(),
+                            mAuth::signOut);
                 });
+    }
 
+    private void deleteUser(FirebaseUser user) {
+        user.delete()
+                .addOnCompleteListener(task -> mAuth.signOut());
+    }
+
+    private void sendVerificationEmail(FirebaseUser user) {
+        user.sendEmailVerification()
+                .addOnCompleteListener(task -> mAuth.signOut());
+    }
+
+    private void clearRegisterFormData() {
+        emailView.getText().clear();
+        passwordView.getText().clear();
+        passwordConfirmView.getText().clear();
     }
 }

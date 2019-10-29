@@ -2,6 +2,7 @@ package com.rodjenihm.godfatherstips.model;
 
 import com.google.firebase.Timestamp;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -9,7 +10,7 @@ public class AppUser {
     private String userId;
     private String email;
     private Timestamp createdAt;
-    private List<String> roles;
+    private List<String> roles = new ArrayList<>();
     private boolean isEmailVerified;
 
     public AppUser() {
