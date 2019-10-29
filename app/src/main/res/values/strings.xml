@@ -23,15 +23,16 @@
 
     <string name="signing_in_failure">Sign In failed</string>
 
+    <string name="reset_link_sending">Sending reset link to email address…</string>
+    <string name="reset_link_not_sent">Could not sent reset link</string>
+    <string name="reset_link_sent">Reset link sent</string>
+    <string name="reset_link_sent_message">Check your email</string>
+
     <string name="register">Sign Up</string>
     <string name="login">Sign In</string>
     <string name="logout">Sign Out</string>
-    <string name="swipe_right_to_login">Swipe right to Sign In</string>
-    <string name="swipe_left_to_login">Swipe left to Sign In</string>
-    <string name="swipe_left_to_register_and_right_to_reset">Swipe left to Sign Up\nSwipe right to Reset Password</string>
-    <string name="right_arrow">Right Arrow</string>
-    <string name="left_arrow">Left Arrow</string>
     <string name="logo">Logo</string>
+
     <string name="email_required">Email address is required</string>
     <string name="email_invalid">Email address is not valid</string>
     <string name="password_required">Password is required</string>

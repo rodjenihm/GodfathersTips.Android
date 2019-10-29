@@ -7,6 +7,8 @@ import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
@@ -24,15 +26,21 @@ public class AuthActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auth);
 
-        configureMaterialDrawer();
-        selectAuthItem(1);
-    }
-
-    private void configureMaterialDrawer() {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) {
+            configureAuthMaterialDrawer(toolbar);
+            selectAuthItem(1);
+        } else {
+
+        }
+
+    }
+
+    private void configureAuthMaterialDrawer(Toolbar toolbar) {
         PrimaryDrawerItem itemSignIn =
                 new PrimaryDrawerItem()
                         .withIdentifier(1)
