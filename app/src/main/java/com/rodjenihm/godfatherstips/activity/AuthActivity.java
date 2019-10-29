@@ -26,14 +26,16 @@ import com.rodjenihm.godfatherstips.fragment.SignInFragment;
 import com.rodjenihm.godfatherstips.fragment.SignUpFragment;
 import com.rodjenihm.godfatherstips.model.AppUser;
 
+import java.util.List;
+
 public class AuthActivity extends AppCompatActivity {
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private final FirebaseFirestore firestore = FirebaseFirestore.getInstance();
 
     private final FragmentManager fragmentManager = getSupportFragmentManager();
 
-    private DrawerBuilder drawerBuilder1 = null;
-    private DrawerBuilder drawerBuilder2 = null;
+    private DrawerBuilder drawerBuilderGuest = null;
+    private DrawerBuilder drawerBuilderMember = null;
 
     private Drawer drawer = null;
 
@@ -51,28 +53,28 @@ public class AuthActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        drawerBuilder1 = new DrawerBuilder()
+        drawerBuilderGuest = new DrawerBuilder()
                 .withActivity(this)
                 .withToolbar(toolbar)
                 .withSliderBackgroundColor(getResources().getColor(R.color.colorBackground));
-        addCommonDrawerItems(drawerBuilder1);
-        drawerBuilder1.addDrawerItems(new DividerDrawerItem());
-        addAuthDrawerItems(drawerBuilder1);
-        drawerBuilder1.addDrawerItems(new DividerDrawerItem());
+        addCommonDrawerItems(drawerBuilderGuest);
+        drawerBuilderGuest.addDrawerItems(new DividerDrawerItem());
+        addAuthDrawerItems(drawerBuilderGuest);
+        drawerBuilderGuest.addDrawerItems(new DividerDrawerItem());
 
-        drawerBuilder2 = new DrawerBuilder()
+        drawerBuilderMember = new DrawerBuilder()
                 .withActivity(this)
                 .withToolbar(toolbar)
                 .withSliderBackgroundColor(getResources().getColor(R.color.colorBackground));
-        addCommonDrawerItems(drawerBuilder2);
-        drawerBuilder2.addDrawerItems(new DividerDrawerItem());
-        addSignOutDrawerItem(drawerBuilder2);
+        addCommonDrawerItems(drawerBuilderMember);
+        drawerBuilderMember.addDrawerItems(new DividerDrawerItem());
+        addSignOutDrawerItem(drawerBuilderMember);
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
         boolean isSignedIn = currentUser != null;
 
         if (!isSignedIn) {
-            drawer = drawerBuilder1.build();
+            drawer = drawerBuilderGuest.build();
             setFragment(SignInFragment.class);
             dlg.dismiss();
         } else {
@@ -81,11 +83,12 @@ public class AuthActivity extends AppCompatActivity {
                     .document(currentUser.getUid())
                     .get()
                     .addOnSuccessListener(documentSnapshot -> {
-                        drawer = drawerBuilder2.build();
+                        AppUser user = documentSnapshot.toObject(AppUser.class);
+                        List<String> roles = user.getRoles();
+
+                        drawer = drawerBuilderMember.build();
                         setFragment(HomeFragment.class);
                         dlg.dismiss();
-
-                        AppUser user = documentSnapshot.toObject(AppUser.class);
                     })
                     .addOnFailureListener(e -> {
                         dlg.dismiss();
