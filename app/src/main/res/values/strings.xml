@@ -44,7 +44,7 @@
     <string name="password_confirm_invalid">Passwords don\'t match</string>
 
     //
-    <string name="identity">Identity</string>
+    <string name="authentication">Authentication</string>
     <string name="drawer_item_home">Home</string>
     <string name="drawer_item_tips">Tips</string>
     <string name="drawer_item_tips_hot">New tips</string>

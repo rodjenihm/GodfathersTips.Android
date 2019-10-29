@@ -91,10 +91,7 @@ public class SignInFragment extends Fragment {
                     if (mAuth.getCurrentUser().isEmailVerified()) {
                         dlg.dismiss();
                         Activity currentActivity = getActivity();
-                        currentActivity.finish();
-                        currentActivity.overridePendingTransition(0, 0);
-                        startActivity(currentActivity.getIntent());
-                        currentActivity.overridePendingTransition(0, 0);
+                        currentActivity.recreate();
                     } else {
                         dlg.dismiss();
                         Utilities.showAlertDialog(
