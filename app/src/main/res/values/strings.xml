@@ -11,13 +11,17 @@
 
     <string name="please_wait">Please wait</string>
     <string name="creating_account">Creating account…</string>
+    <string name="signing_in">Signing In…</string>
     <string name="error">Error</string>
 
     <string name="creating_account_success">Account successfully created</string>
     <string name="email_confirm_require">Please confirm your email address to complete Sign Up process</string>
+
     <string name="creating_account_failure">Error creating account</string>
     <string name="creating_user_failure">Error updating users table</string>
     <string name="creating_role_failure">Error updating roles table</string>
+
+    <string name="signing_in_failure">Sign In failed</string>
 
     <string name="register">Sign Up</string>
     <string name="login">Sign In</string>

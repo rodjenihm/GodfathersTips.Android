@@ -55,8 +55,8 @@ public class SignUpFragment extends Fragment {
 
         passwordConfirmView = view.findViewById(R.id.password_confirm);
 
-        Button registerButton = view.findViewById(R.id.button_sign_up);
-        registerButton.setOnClickListener(v -> {
+        Button signUpButton = view.findViewById(R.id.button_sign_up);
+        signUpButton.setOnClickListener(v -> {
             if (validateRegisterFormData()) {
                 createUserWithEmailAndPassword(emailView.getText().toString(), passwordView.getText().toString());
             }
