@@ -162,7 +162,7 @@ public class AuthActivity extends AppCompatActivity implements TipFragment.OnLis
                         e.printStackTrace();
                     }
                     return true;
-                });;
+                });
 
         ExpandableDrawerItem itemTips = new ExpandableDrawerItem()
                 .withEnabled(isVip || isAdmin)
