@@ -131,7 +131,7 @@ public class AuthActivity extends AppCompatActivity {
                 .withOnDrawerItemClickListener((view, position, drawerItem) -> showShareMenu());
 
         SecondaryDrawerItem itemTipsHot = new SecondaryDrawerItem()
-                .withEnabled(isVip)
+                .withEnabled(isVip || isAdmin)
                 .withLevel(4)
                 .withName(R.string.drawer_item_tips_hot)
                 .withTextColor(getResources().getColor(R.color.colorText))
@@ -139,14 +139,14 @@ public class AuthActivity extends AppCompatActivity {
                 ;
 
         SecondaryDrawerItem itemTipsHistory = new SecondaryDrawerItem()
-                .withEnabled(isVip)
+                .withEnabled(isVip || isAdmin)
                 .withIdentifier(6)
                 .withLevel(4)
                 .withName(R.string.drawer_item_tips_history)
                 .withTextColor(getResources().getColor(R.color.colorText));
 
         ExpandableDrawerItem itemTips = new ExpandableDrawerItem()
-                .withEnabled(isVip)
+                .withEnabled(isVip || isAdmin)
                 .withName(R.string.drawer_item_tips)
                 .withTextColor(getResources().getColor(R.color.colorText))
                 .withIcon(getResources().getDrawable(R.drawable.tip_icon))
@@ -154,7 +154,7 @@ public class AuthActivity extends AppCompatActivity {
                 .withSubItems(itemTipsHot, itemTipsHistory);
 
         PrimaryDrawerItem itemChat = new PrimaryDrawerItem()
-                .withEnabled(isVip)
+                .withEnabled(isVip || isAdmin)
                 .withIdentifier(7)
                 .withName(R.string.drawer_item_chat)
                 .withIcon(getResources().getDrawable(R.drawable.chat_icon))
@@ -196,6 +196,22 @@ public class AuthActivity extends AppCompatActivity {
         drawerBuilder.addDrawerItems(itemSignIn, itemSignUp, itemResetPassword);
     }
 
+    private void addAccountHeaderWithUser(DrawerBuilder drawerBuilder, AppUser user) {
+        AccountHeader headerResult = new AccountHeaderBuilder()
+                .withActivity(this)
+                .addProfiles(
+                        new ProfileDrawerItem()
+                                .withName(user.getEmail())
+                                .withEmail(user.getEmail())
+                                .withIcon(getResources().getDrawable(R.drawable.profile_icon))
+                )
+                .withTextColor(getResources().getColor(R.color.colorText))
+                .withOnAccountHeaderListener((view, profile, currentProfile) -> false)
+                .build();
+
+        drawerBuilder.withAccountHeader(headerResult);
+    }
+
     private void addSignOutDrawerItem(DrawerBuilder drawerBuilder) {
         PrimaryDrawerItem itemSignOut =
                 new PrimaryDrawerItem()
@@ -232,21 +248,5 @@ public class AuthActivity extends AppCompatActivity {
         startActivity(Intent.createChooser(sharingIntent, "Share via"));
         drawer.closeDrawer();
         return true;
-    }
-
-    private void addAccountHeaderWithUser(DrawerBuilder drawerBuilder, AppUser user) {
-        AccountHeader headerResult = new AccountHeaderBuilder()
-                .withActivity(this)
-                .addProfiles(
-                        new ProfileDrawerItem()
-                                .withName(user.getEmail())
-                                .withEmail(user.getEmail())
-                                .withIcon(getResources().getDrawable(R.drawable.profile_icon))
-                )
-                .withTextColor(getResources().getColor(R.color.colorText))
-                .withOnAccountHeaderListener((view, profile, currentProfile) -> false)
-                .build();
-
-        drawerBuilder.withAccountHeader(headerResult);
     }
 }
