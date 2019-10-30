@@ -12,10 +12,15 @@ import android.os.Bundle;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.mikepenz.materialdrawer.AccountHeader;
+import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
+import com.mikepenz.materialdrawer.model.ExpandableDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
+import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
+import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.rodjenihm.godfatherstips.R;
 import com.rodjenihm.godfatherstips.Utilities;
 import com.rodjenihm.godfatherstips.fragment.AboutFragment;
@@ -34,8 +39,7 @@ public class AuthActivity extends AppCompatActivity {
 
     private final FragmentManager fragmentManager = getSupportFragmentManager();
 
-    private DrawerBuilder drawerBuilderGuest = null;
-    private DrawerBuilder drawerBuilderMember = null;
+    private DrawerBuilder drawerBuilder = null;
 
     private Drawer drawer = null;
 
@@ -53,28 +57,19 @@ public class AuthActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        drawerBuilderGuest = new DrawerBuilder()
+        drawerBuilder = new DrawerBuilder()
                 .withActivity(this)
                 .withToolbar(toolbar)
                 .withSliderBackgroundColor(getResources().getColor(R.color.colorBackground));
-        addCommonDrawerItems(drawerBuilderGuest);
-        drawerBuilderGuest.addDrawerItems(new DividerDrawerItem());
-        addAuthDrawerItems(drawerBuilderGuest);
-        drawerBuilderGuest.addDrawerItems(new DividerDrawerItem());
-
-        drawerBuilderMember = new DrawerBuilder()
-                .withActivity(this)
-                .withToolbar(toolbar)
-                .withSliderBackgroundColor(getResources().getColor(R.color.colorBackground));
-        addCommonDrawerItems(drawerBuilderMember);
-        drawerBuilderMember.addDrawerItems(new DividerDrawerItem());
-        addSignOutDrawerItem(drawerBuilderMember);
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
         boolean isSignedIn = currentUser != null;
 
         if (!isSignedIn) {
-            drawer = drawerBuilderGuest.build();
+            addAuthDrawerItems(drawerBuilder);
+            drawerBuilder.addDrawerItems(new DividerDrawerItem());
+
+            drawer = drawerBuilder.build();
             setFragment(SignInFragment.class);
             dlg.dismiss();
         } else {
@@ -84,9 +79,14 @@ public class AuthActivity extends AppCompatActivity {
                     .get()
                     .addOnSuccessListener(documentSnapshot -> {
                         AppUser user = documentSnapshot.toObject(AppUser.class);
-                        List<String> roles = user.getRoles();
+                        boolean isVip = user.getRoles().contains("VIP");
+                        boolean isAdmin = user.getRoles().contains("ADMIN");
 
-                        drawer = drawerBuilderMember.build();
+                        addAccountHeaderWithUser(drawerBuilder, user);
+                        addCommonDrawerItems(drawerBuilder, isVip, isAdmin);
+                        addSignOutDrawerItem(drawerBuilder);
+
+                        drawer = drawerBuilder.build();
                         setFragment(HomeFragment.class);
                         dlg.dismiss();
                     })
@@ -96,12 +96,15 @@ public class AuthActivity extends AppCompatActivity {
                                 this,
                                 getResources().getString(R.string.loading_data_error),
                                 e.getLocalizedMessage(),
-                                mAuth::signOut);
+                                () -> {
+                                    mAuth.signOut();
+                                    recreate();
+                                });
                     });
         }
     }
 
-    private void addCommonDrawerItems(DrawerBuilder drawer) {
+    private void addCommonDrawerItems(DrawerBuilder drawerBuilder, boolean isVip, boolean isAdmin) {
         PrimaryDrawerItem itemHome = new PrimaryDrawerItem()
                 .withName(R.string.drawer_item_home)
                 .withTextColor(getResources().getColor(R.color.colorText))
@@ -127,10 +130,51 @@ public class AuthActivity extends AppCompatActivity {
                 .withTextColor(getResources().getColor(R.color.colorText))
                 .withOnDrawerItemClickListener((view, position, drawerItem) -> showShareMenu());
 
-        drawer.addDrawerItems(itemHome, itemAbout, itemContact, itemShare);
+        SecondaryDrawerItem itemTipsHot = new SecondaryDrawerItem()
+                .withEnabled(isVip)
+                .withLevel(4)
+                .withName(R.string.drawer_item_tips_hot)
+                .withTextColor(getResources().getColor(R.color.colorText))
+                //.withOnDrawerItemClickListener((view, position, drawerItem) -> setFragment(TipFragment.class))
+                ;
+
+        SecondaryDrawerItem itemTipsHistory = new SecondaryDrawerItem()
+                .withEnabled(isVip)
+                .withIdentifier(6)
+                .withLevel(4)
+                .withName(R.string.drawer_item_tips_history)
+                .withTextColor(getResources().getColor(R.color.colorText));
+
+        ExpandableDrawerItem itemTips = new ExpandableDrawerItem()
+                .withEnabled(isVip)
+                .withName(R.string.drawer_item_tips)
+                .withTextColor(getResources().getColor(R.color.colorText))
+                .withIcon(getResources().getDrawable(R.drawable.tip_icon))
+                .withArrowColor(getResources().getColor(R.color.colorText))
+                .withSubItems(itemTipsHot, itemTipsHistory);
+
+        PrimaryDrawerItem itemChat = new PrimaryDrawerItem()
+                .withEnabled(isVip)
+                .withIdentifier(7)
+                .withName(R.string.drawer_item_chat)
+                .withIcon(getResources().getDrawable(R.drawable.chat_icon))
+                .withTextColor(getResources().getColor(R.color.colorText));
+
+        PrimaryDrawerItem itemUsers = new PrimaryDrawerItem()
+                .withEnabled(isAdmin)
+                .withIdentifier(7)
+                .withName(R.string.drawer_item_users)
+                .withIcon(getResources().getDrawable(R.drawable.users_icon))
+                .withTextColor(getResources().getColor(R.color.colorText));
+
+        drawerBuilder.addDrawerItems(
+                itemHome, itemAbout, itemContact, itemShare,
+                new DividerDrawerItem(),
+                itemTips, itemChat, itemUsers,
+                new DividerDrawerItem());
     }
 
-    private void addAuthDrawerItems(DrawerBuilder drawer) {
+    private void addAuthDrawerItems(DrawerBuilder drawerBuilder) {
         PrimaryDrawerItem itemSignIn =
                 new PrimaryDrawerItem()
                         .withName(R.string.sign_in)
@@ -149,7 +193,7 @@ public class AuthActivity extends AppCompatActivity {
                         .withTextColor(getResources().getColor(R.color.colorText))
                         .withOnDrawerItemClickListener((view, position, drawerItem) -> setFragment(ResetPasswordFragment.class));
 
-        drawer.addDrawerItems(itemSignIn, itemSignUp, itemResetPassword);
+        drawerBuilder.addDrawerItems(itemSignIn, itemSignUp, itemResetPassword);
     }
 
     private void addSignOutDrawerItem(DrawerBuilder drawerBuilder) {
@@ -188,5 +232,21 @@ public class AuthActivity extends AppCompatActivity {
         startActivity(Intent.createChooser(sharingIntent, "Share via"));
         drawer.closeDrawer();
         return true;
+    }
+
+    private void addAccountHeaderWithUser(DrawerBuilder drawerBuilder, AppUser user) {
+        AccountHeader headerResult = new AccountHeaderBuilder()
+                .withActivity(this)
+                .addProfiles(
+                        new ProfileDrawerItem()
+                                .withName(user.getEmail())
+                                .withEmail(user.getEmail())
+                                .withIcon(getResources().getDrawable(R.drawable.profile_icon))
+                )
+                .withTextColor(getResources().getColor(R.color.colorText))
+                .withOnAccountHeaderListener((view, profile, currentProfile) -> false)
+                .build();
+
+        drawerBuilder.withAccountHeader(headerResult);
     }
 }
