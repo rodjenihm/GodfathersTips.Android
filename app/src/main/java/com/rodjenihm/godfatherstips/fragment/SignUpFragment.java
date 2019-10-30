@@ -26,6 +26,8 @@ import com.rodjenihm.godfatherstips.R;
 import com.rodjenihm.godfatherstips.Utilities;
 import com.rodjenihm.godfatherstips.model.AppUser;
 
+import java.util.Date;
+
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -122,7 +124,7 @@ public class SignUpFragment extends Fragment {
                             .withUserId(Uid)
                             .withEmail(email)
                             .withEmailVerified(true)
-                            .withCreatedAt(Timestamp.now())
+                            .withCreatedAt(new Date())
                             .withRole("MEMBER");
 
                     firestore.collection("users")

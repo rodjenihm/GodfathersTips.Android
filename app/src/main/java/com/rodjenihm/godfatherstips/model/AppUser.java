@@ -3,20 +3,21 @@ package com.rodjenihm.godfatherstips.model;
 import com.google.firebase.Timestamp;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
 public class AppUser {
     private String userId;
     private String email;
-    private Timestamp createdAt;
+    private Date createdAt;
     private List<String> roles = new ArrayList<>();
     private boolean isEmailVerified;
 
     public AppUser() {
     }
 
-    public AppUser(String userId, String email, Timestamp createdAt, List<String> roles, boolean isEmailVerified) {
+    public AppUser(String userId, String email, Date createdAt, List<String> roles, boolean isEmailVerified) {
         this.userId = userId;
         this.email = email;
         this.createdAt = createdAt;
@@ -40,11 +41,11 @@ public class AppUser {
         this.email = email;
     }
 
-    public Timestamp getCreatedAt() {
+    public Date getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Timestamp createdAt) {
+    public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 
@@ -79,7 +80,7 @@ public class AppUser {
         return this;
     }
 
-    public AppUser withCreatedAt(Timestamp createdAt) {
+    public AppUser withCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
         return this;
     }

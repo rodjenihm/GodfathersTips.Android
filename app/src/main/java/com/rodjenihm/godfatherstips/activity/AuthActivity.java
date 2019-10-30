@@ -30,10 +30,11 @@ import com.rodjenihm.godfatherstips.fragment.ResetPasswordFragment;
 import com.rodjenihm.godfatherstips.fragment.SignInFragment;
 import com.rodjenihm.godfatherstips.fragment.SignUpFragment;
 import com.rodjenihm.godfatherstips.fragment.TipFragment;
+import com.rodjenihm.godfatherstips.fragment.UserFragment;
 import com.rodjenihm.godfatherstips.model.AppUser;
 import com.rodjenihm.godfatherstips.model.Tip;
 
-public class AuthActivity extends AppCompatActivity implements TipFragment.OnListFragmentInteractionListener {
+public class AuthActivity extends AppCompatActivity implements TipFragment.OnListFragmentInteractionListener, UserFragment.OnListFragmentInteractionListener {
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private final FirebaseFirestore firestore = FirebaseFirestore.getInstance();
 
@@ -183,7 +184,8 @@ public class AuthActivity extends AppCompatActivity implements TipFragment.OnLis
                 .withIdentifier(7)
                 .withName(R.string.drawer_item_users)
                 .withIcon(getResources().getDrawable(R.drawable.users_icon))
-                .withTextColor(getResources().getColor(R.color.colorText));
+                .withTextColor(getResources().getColor(R.color.colorText))
+                .withOnDrawerItemClickListener((view, position, drawerItem) -> setFragment(UserFragment.class));
 
         drawerBuilder.addDrawerItems(
                 itemHome, itemAbout, itemContact, itemShare,
@@ -270,6 +272,11 @@ public class AuthActivity extends AppCompatActivity implements TipFragment.OnLis
 
     @Override
     public void onListFragmentInteraction(Tip item) {
+
+    }
+
+    @Override
+    public void onListFragmentInteraction(AppUser item) {
 
     }
 }
