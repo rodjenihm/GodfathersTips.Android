@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -21,6 +22,8 @@ import com.mikepenz.materialdrawer.model.ExpandableDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
+import com.rodjenihm.godfatherstips.OnListFragmentInteractionListener;
 import com.rodjenihm.godfatherstips.R;
 import com.rodjenihm.godfatherstips.Utilities;
 import com.rodjenihm.godfatherstips.fragment.AboutFragment;
@@ -29,11 +32,13 @@ import com.rodjenihm.godfatherstips.fragment.HomeFragment;
 import com.rodjenihm.godfatherstips.fragment.ResetPasswordFragment;
 import com.rodjenihm.godfatherstips.fragment.SignInFragment;
 import com.rodjenihm.godfatherstips.fragment.SignUpFragment;
+import com.rodjenihm.godfatherstips.fragment.TipFragment;
 import com.rodjenihm.godfatherstips.model.AppUser;
+import com.rodjenihm.godfatherstips.model.Tip;
 
 import java.util.List;
 
-public class AuthActivity extends AppCompatActivity {
+public class AuthActivity extends AppCompatActivity implements OnListFragmentInteractionListener {
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private final FirebaseFirestore firestore = FirebaseFirestore.getInstance();
 
@@ -135,15 +140,33 @@ public class AuthActivity extends AppCompatActivity {
                 .withLevel(4)
                 .withName(R.string.drawer_item_tips_hot)
                 .withTextColor(getResources().getColor(R.color.colorText))
-                //.withOnDrawerItemClickListener((view, position, drawerItem) -> setFragment(TipFragment.class))
-                ;
+                .withOnDrawerItemClickListener((view, position, drawerItem) -> {
+                    try {
+                        Fragment fragment = TipFragment.class.newInstance().withActive(true);
+                        fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+                        drawer.closeDrawer();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    return true;
+                });
 
         SecondaryDrawerItem itemTipsHistory = new SecondaryDrawerItem()
                 .withEnabled(isVip || isAdmin)
                 .withIdentifier(6)
                 .withLevel(4)
                 .withName(R.string.drawer_item_tips_history)
-                .withTextColor(getResources().getColor(R.color.colorText));
+                .withTextColor(getResources().getColor(R.color.colorText))
+                .withOnDrawerItemClickListener((view, position, drawerItem) -> {
+                    try {
+                        Fragment fragment = TipFragment.class.newInstance().withActive(false);
+                        fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+                        drawer.closeDrawer();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    return true;
+                });;
 
         ExpandableDrawerItem itemTips = new ExpandableDrawerItem()
                 .withEnabled(isVip || isAdmin)
@@ -248,5 +271,10 @@ public class AuthActivity extends AppCompatActivity {
         startActivity(Intent.createChooser(sharingIntent, "Share via"));
         drawer.closeDrawer();
         return true;
+    }
+
+    @Override
+    public void onListFragmentInteraction(Tip item) {
+
     }
 }

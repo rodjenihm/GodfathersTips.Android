@@ -7,13 +7,18 @@ public class Tip {
     private String tip;
     private String odds;
     private String status;
+    private boolean active;
 
-    public Tip(String rivals, String time, String tip, String odds, String status) {
+    public Tip() {
+    }
+
+    public Tip(String rivals, String time, String tip, String odds, String status, boolean active) {
         this.rivals = rivals;
         this.time = time;
         this.tip = tip;
         this.odds = odds;
         this.status = status;
+        this.active = active;
     }
 
     public String getRivals() {
@@ -54,6 +59,14 @@ public class Tip {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public Tip withRivals(String rivals) {
