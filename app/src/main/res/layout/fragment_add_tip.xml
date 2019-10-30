@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragment.AddTipFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorBackground"
+        android:orientation="vertical"
+        tools:context=".fragment.AddTipFragment">
+
+        <EditText
+            android:id="@+id/rivals"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="10dp"
+            android:alpha="0.80"
+            android:background="@drawable/edit_text_custom"
+            android:hint="@string/rivals"
+            android:importantForAutofill="no"
+            android:inputType="text"
+            android:padding="15dp"
+            android:textSize="15sp" />
+
+        <EditText
+            android:id="@+id/time"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="10dp"
+            android:alpha="0.80"
+            android:background="@drawable/edit_text_custom"
+            android:hint="@string/time"
+            android:importantForAutofill="no"
+            android:inputType="text"
+            android:padding="15dp"
+            android:textSize="15sp" />
+
+        <EditText
+            android:id="@+id/tip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="10dp"
+            android:alpha="0.80"
+            android:background="@drawable/edit_text_custom"
+            android:hint="@string/tip"
+            android:importantForAutofill="no"
+            android:inputType="textMultiLine"
+            android:lines="5"
+            android:padding="15dp"
+            android:scrollbars="vertical"
+            android:textSize="15sp" />
+
+        <EditText
+            android:id="@+id/odds"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="10dp"
+            android:alpha="0.80"
+            android:background="@drawable/edit_text_custom"
+            android:hint="@string/odds"
+            android:importantForAutofill="no"
+            android:inputType="text"
+            android:padding="15dp"
+            android:textSize="15sp" />
+
+        <Button
+            android:id="@+id/button_add_tip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="10dp"
+            android:alpha="0.80"
+            android:background="@drawable/button_custom"
+            android:gravity="center"
+            android:text="@string/register" />
+
+    </LinearLayout>
+
+</ScrollView>
