@@ -39,4 +39,13 @@
 
     </TextView>
 
+    <Switch
+        android:id="@+id/switch_vip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:gravity="start"
+        android:text="@string/vip_status_change"
+        android:textColor="@color/colorText" />
+
 </LinearLayout>

@@ -1,12 +1,17 @@
 package com.rodjenihm.godfatherstips;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.rodjenihm.godfatherstips.fragment.UserFragment;
 import com.rodjenihm.godfatherstips.model.AppUser;
 
@@ -32,6 +37,7 @@ public class UserRecyclerViewAdapter extends RecyclerView.Adapter<UserRecyclerVi
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
+        String Uid = mValues.get(position).getUserId();
         String email = "Email: " + mValues.get(position).getEmail();
         String isEmailVerified = "Email verified: " + (mValues.get(position).isEmailVerified() ? "Yes" : "No");
         String createdAt = "Registration date: " + new SimpleDateFormat("dd.MM.yyyy. - HH:mm").format(mValues.get(position).getCreatedAt());
@@ -41,8 +47,12 @@ public class UserRecyclerViewAdapter extends RecyclerView.Adapter<UserRecyclerVi
             roleName = "ADMIN";
         } else if(mValues.get(position).getRoles().contains("VIP")) {
             roleName = "VIP";
+            holder.mSwitchView.setVisibility(View.VISIBLE);
+            holder.mSwitchView.setChecked(true);
         } else {
             roleName = "MEMBER";
+            holder.mSwitchView.setVisibility(View.VISIBLE);
+            holder.mSwitchView.setChecked(false);
         }
 
         String role = "Role: " + roleName;
@@ -52,6 +62,33 @@ public class UserRecyclerViewAdapter extends RecyclerView.Adapter<UserRecyclerVi
         holder.mEmailVerifiedView.setText(isEmailVerified);
         holder.mCreatedAtView.setText(createdAt);
         holder.mRoleView.setText(role);
+        holder.mSwitchView.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                FirebaseFirestore.getInstance()
+                        .collection("users")
+                        .document(Uid)
+                        .update("roles", FieldValue.arrayUnion("VIP"))
+                        .addOnSuccessListener(aVoid -> {
+                            holder.mRoleView.setText("Role: VIP");
+                            FirebaseFirestore.getInstance()
+                                    .collection("roles")
+                                    .document("VIP")
+                                    .update("users", FieldValue.arrayUnion(Uid));
+                        });
+            } else {
+                FirebaseFirestore.getInstance()
+                        .collection("users")
+                        .document(Uid)
+                        .update("roles", FieldValue.arrayRemove("VIP"))
+                        .addOnSuccessListener(aVoid -> {
+                            holder.mRoleView.setText("Role: MEMBER");
+                            FirebaseFirestore.getInstance()
+                                    .collection("roles")
+                                    .document("VIP")
+                                    .update("users", FieldValue.arrayRemove(Uid));
+                        });
+            }
+        });
 
         holder.mView.setOnClickListener(v -> {
             if (null != mListener) {
@@ -71,6 +108,7 @@ public class UserRecyclerViewAdapter extends RecyclerView.Adapter<UserRecyclerVi
         public final TextView mEmailVerifiedView;
         public final TextView mCreatedAtView;
         public final TextView mRoleView;
+        public final Switch mSwitchView;
         public AppUser mItem;
 
         public ViewHolder(View view) {
@@ -80,6 +118,7 @@ public class UserRecyclerViewAdapter extends RecyclerView.Adapter<UserRecyclerVi
             mEmailVerifiedView = view.findViewById(R.id.email_verified);
             mCreatedAtView = view.findViewById(R.id.created_at);
             mRoleView = view.findViewById(R.id.role);
+            mSwitchView = view.findViewById(R.id.switch_vip);
         }
 
         @Override
