@@ -28,7 +28,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.rodjenihm.godfatherstips.OnListFragmentInteractionListener;
 import com.rodjenihm.godfatherstips.R;
 import com.rodjenihm.godfatherstips.TipRecyclerViewAdapter;
 import com.rodjenihm.godfatherstips.model.Tip;
@@ -130,5 +129,9 @@ public class TipFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    public interface OnListFragmentInteractionListener {
+        void onListFragmentInteraction(Tip item);
     }
 }

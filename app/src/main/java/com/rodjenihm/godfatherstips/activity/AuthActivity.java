@@ -8,7 +8,6 @@ import androidx.fragment.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -22,8 +21,6 @@ import com.mikepenz.materialdrawer.model.ExpandableDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
-import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
-import com.rodjenihm.godfatherstips.OnListFragmentInteractionListener;
 import com.rodjenihm.godfatherstips.R;
 import com.rodjenihm.godfatherstips.Utilities;
 import com.rodjenihm.godfatherstips.fragment.AboutFragment;
@@ -36,9 +33,7 @@ import com.rodjenihm.godfatherstips.fragment.TipFragment;
 import com.rodjenihm.godfatherstips.model.AppUser;
 import com.rodjenihm.godfatherstips.model.Tip;
 
-import java.util.List;
-
-public class AuthActivity extends AppCompatActivity implements OnListFragmentInteractionListener {
+public class AuthActivity extends AppCompatActivity implements TipFragment.OnListFragmentInteractionListener {
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private final FirebaseFirestore firestore = FirebaseFirestore.getInstance();
 
