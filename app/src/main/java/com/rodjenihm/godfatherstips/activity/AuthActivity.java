@@ -24,6 +24,7 @@ import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.rodjenihm.godfatherstips.R;
 import com.rodjenihm.godfatherstips.Utilities;
 import com.rodjenihm.godfatherstips.fragment.AboutFragment;
+import com.rodjenihm.godfatherstips.fragment.AddTipFragment;
 import com.rodjenihm.godfatherstips.fragment.ContactFragment;
 import com.rodjenihm.godfatherstips.fragment.HomeFragment;
 import com.rodjenihm.godfatherstips.fragment.ResetPasswordFragment;
@@ -149,7 +150,6 @@ public class AuthActivity extends AppCompatActivity implements TipFragment.OnLis
 
         SecondaryDrawerItem itemTipsHistory = new SecondaryDrawerItem()
                 .withEnabled(isVip || isAdmin)
-                .withIdentifier(6)
                 .withLevel(4)
                 .withName(R.string.drawer_item_tips_history)
                 .withTextColor(getResources().getColor(R.color.colorText))
@@ -164,13 +164,20 @@ public class AuthActivity extends AppCompatActivity implements TipFragment.OnLis
                     return true;
                 });
 
+        SecondaryDrawerItem itemTipsAdd = new SecondaryDrawerItem()
+                .withEnabled(isAdmin)
+                .withLevel(4)
+                .withName(R.string.drawer_item_tips_add)
+                .withTextColor(getResources().getColor(R.color.colorText))
+                .withOnDrawerItemClickListener((view, position, drawerItem) -> setFragment(AddTipFragment.class));
+
         ExpandableDrawerItem itemTips = new ExpandableDrawerItem()
                 .withEnabled(isVip || isAdmin)
                 .withName(R.string.drawer_item_tips)
                 .withTextColor(getResources().getColor(R.color.colorText))
                 .withIcon(getResources().getDrawable(R.drawable.tip_icon))
                 .withArrowColor(getResources().getColor(R.color.colorText))
-                .withSubItems(itemTipsHot, itemTipsHistory);
+                .withSubItems(itemTipsHot, itemTipsHistory, itemTipsAdd);
 
         PrimaryDrawerItem itemChat = new PrimaryDrawerItem()
                 .withEnabled(isVip || isAdmin)

@@ -53,11 +53,17 @@
     <string name="drawer_item_tips">Tips</string>
     <string name="drawer_item_tips_hot">New tips</string>
     <string name="drawer_item_tips_history">Tips history</string>
+    <string name="drawer_item_tips_add">Add tip</string>
     <string name="drawer_item_chat">Chat</string>
     <string name="drawer_item_users">Users</string>
     <string name="vip_status_change">Toggle VIP status</string>
     <string name="vip_status_on">Give VIP status</string>
     <string name="vip_status_off">Remove VIP status</string>
+
+    <string name="rivals">Rivals</string>
+    <string name="time">Time</string>
+    <string name="tip">Tip</string>
+    <string name="odds">Odds</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
