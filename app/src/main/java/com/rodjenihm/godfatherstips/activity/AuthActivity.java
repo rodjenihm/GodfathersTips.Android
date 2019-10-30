@@ -1,32 +1,22 @@
 package com.rodjenihm.godfatherstips.activity;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
+import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-import android.app.ProgressDialog;
-import android.content.Intent;
-import android.os.Bundle;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.mikepenz.materialdrawer.AccountHeader;
-import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
-import com.mikepenz.materialdrawer.model.DividerDrawerItem;
-import com.mikepenz.materialdrawer.model.ExpandableDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
-import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
-import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.rodjenihm.godfatherstips.R;
 import com.rodjenihm.godfatherstips.Utilities;
-import com.rodjenihm.godfatherstips.fragment.AboutFragment;
-import com.rodjenihm.godfatherstips.fragment.AddTipFragment;
-import com.rodjenihm.godfatherstips.fragment.ContactFragment;
-import com.rodjenihm.godfatherstips.fragment.HomeFragment;
 import com.rodjenihm.godfatherstips.fragment.ResetPasswordFragment;
 import com.rodjenihm.godfatherstips.fragment.SignInFragment;
 import com.rodjenihm.godfatherstips.fragment.SignUpFragment;
@@ -37,11 +27,9 @@ import com.rodjenihm.godfatherstips.model.Tip;
 
 public class AuthActivity extends AppCompatActivity implements TipFragment.OnListFragmentInteractionListener, UserFragment.OnListFragmentInteractionListener {
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    private final FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     private final FragmentManager fragmentManager = getSupportFragmentManager();
-
-    private DrawerBuilder drawerBuilder = null;
 
     private Drawer drawer = null;
 
@@ -50,158 +38,49 @@ public class AuthActivity extends AppCompatActivity implements TipFragment.OnLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auth);
 
-        final ProgressDialog dlg = new ProgressDialog(this);
-        dlg.setTitle(R.string.please_wait);
-        dlg.setMessage(getResources().getString(R.string.loading_data));
-        dlg.show();
-
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-
-        drawerBuilder = new DrawerBuilder()
-                .withActivity(this)
-                .withToolbar(toolbar)
-                .withSliderBackgroundColor(getResources().getColor(R.color.colorBackground));
-
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        boolean isSignedIn = currentUser != null;
-
-        if (!isSignedIn) {
-            addAuthDrawerItems(drawerBuilder);
-            drawerBuilder.addDrawerItems(new DividerDrawerItem());
-
-            drawer = drawerBuilder.build();
+        if (currentUser == null) {
+            drawer = buildAuthMaterialDrawer();
             setFragment(SignInFragment.class);
-            dlg.dismiss();
         } else {
-            firestore
-                    .collection("users")
+            final ProgressDialog dlg = new ProgressDialog(this);
+            dlg.setTitle(R.string.please_wait);
+            dlg.setMessage(getResources().getString(R.string.loading_user_data));
+            dlg.show();
+
+            db.collection("users")
                     .document(currentUser.getUid())
                     .get()
                     .addOnSuccessListener(documentSnapshot -> {
-                        AppUser user = documentSnapshot.toObject(AppUser.class);
-                        boolean isVip = user.getRoles().contains("VIP");
-                        boolean isAdmin = user.getRoles().contains("ADMIN");
-
-                        addAccountHeaderWithUser(drawerBuilder, user);
-                        addCommonDrawerItems(drawerBuilder, isVip, isAdmin);
-                        addSignOutDrawerItem(drawerBuilder);
-
-                        drawer = drawerBuilder.build();
-                        setFragment(HomeFragment.class);
                         dlg.dismiss();
+                        AppUser user = documentSnapshot.toObject(AppUser.class);
+                        Intent intent = new Intent(this, NavigationActivity.class);
+                        intent.putExtra("user", user);
+                        startActivity(intent);
+                        finish();
                     })
                     .addOnFailureListener(e -> {
                         dlg.dismiss();
                         Utilities.showAlertDialog(
                                 this,
-                                getResources().getString(R.string.loading_data_error),
+                                getResources().getString(R.string.loading_user_data_error),
                                 e.getLocalizedMessage(),
-                                () -> {
-                                    mAuth.signOut();
-                                    recreate();
-                                });
+                                mAuth::signOut);
+                        recreate();
                     });
         }
     }
 
-    private void addCommonDrawerItems(DrawerBuilder drawerBuilder, boolean isVip, boolean isAdmin) {
-        PrimaryDrawerItem itemHome = new PrimaryDrawerItem()
-                .withName(R.string.drawer_item_home)
-                .withTextColor(getResources().getColor(R.color.colorText))
-                .withIcon(getResources().getDrawable(R.drawable.ic_home))
-                .withOnDrawerItemClickListener((view, position, drawerItem) -> setFragment(HomeFragment.class));
+    private Drawer buildAuthMaterialDrawer() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        PrimaryDrawerItem itemAbout = new PrimaryDrawerItem()
-                .withName(R.string.drawer_item_about)
-                .withTextColor(getResources().getColor(R.color.colorText))
-                .withIcon(getResources().getDrawable(R.drawable.about_icon))
-                .withOnDrawerItemClickListener((view, position, drawerItem) -> setFragment(AboutFragment.class));
+        DrawerBuilder drawerBuilder = new DrawerBuilder()
+                .withActivity(this)
+                .withToolbar(toolbar)
+                .withSliderBackgroundColor(getResources().getColor(R.color.colorBackground));
 
-        PrimaryDrawerItem itemContact = new PrimaryDrawerItem()
-                .withIdentifier(7)
-                .withName(R.string.drawer_item_contact)
-                .withIcon(getResources().getDrawable(android.R.drawable.ic_dialog_email))
-                .withTextColor(getResources().getColor(R.color.colorText))
-                .withOnDrawerItemClickListener((view, position, drawerItem) -> setFragment(ContactFragment.class));
-
-        PrimaryDrawerItem itemShare = new PrimaryDrawerItem()
-                .withName(R.string.drawer_item_share)
-                .withIcon(getResources().getDrawable(R.drawable.share_icon))
-                .withTextColor(getResources().getColor(R.color.colorText))
-                .withOnDrawerItemClickListener((view, position, drawerItem) -> showShareMenu());
-
-        SecondaryDrawerItem itemTipsHot = new SecondaryDrawerItem()
-                .withEnabled(isVip || isAdmin)
-                .withLevel(4)
-                .withName(R.string.drawer_item_tips_hot)
-                .withTextColor(getResources().getColor(R.color.colorText))
-                .withOnDrawerItemClickListener((view, position, drawerItem) -> {
-                    try {
-                        Fragment fragment = TipFragment.class.newInstance().withActive(true);
-                        fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
-                        drawer.closeDrawer();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    return true;
-                });
-
-        SecondaryDrawerItem itemTipsHistory = new SecondaryDrawerItem()
-                .withEnabled(isVip || isAdmin)
-                .withLevel(4)
-                .withName(R.string.drawer_item_tips_history)
-                .withTextColor(getResources().getColor(R.color.colorText))
-                .withOnDrawerItemClickListener((view, position, drawerItem) -> {
-                    try {
-                        Fragment fragment = TipFragment.class.newInstance().withActive(false);
-                        fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
-                        drawer.closeDrawer();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    return true;
-                });
-
-        SecondaryDrawerItem itemTipsAdd = new SecondaryDrawerItem()
-                .withEnabled(isAdmin)
-                .withLevel(4)
-                .withName(R.string.drawer_item_tips_add)
-                .withTextColor(getResources().getColor(R.color.colorText))
-                .withOnDrawerItemClickListener((view, position, drawerItem) -> setFragment(AddTipFragment.class));
-
-        ExpandableDrawerItem itemTips = new ExpandableDrawerItem()
-                .withEnabled(isVip || isAdmin)
-                .withName(R.string.drawer_item_tips)
-                .withTextColor(getResources().getColor(R.color.colorText))
-                .withIcon(getResources().getDrawable(R.drawable.tip_icon))
-                .withArrowColor(getResources().getColor(R.color.colorText))
-                .withSubItems(itemTipsHot, itemTipsHistory, itemTipsAdd);
-
-        PrimaryDrawerItem itemChat = new PrimaryDrawerItem()
-                .withEnabled(isVip || isAdmin)
-                .withIdentifier(7)
-                .withName(R.string.drawer_item_chat)
-                .withIcon(getResources().getDrawable(R.drawable.chat_icon))
-                .withTextColor(getResources().getColor(R.color.colorText));
-
-        PrimaryDrawerItem itemUsers = new PrimaryDrawerItem()
-                .withEnabled(isAdmin)
-                .withIdentifier(7)
-                .withName(R.string.drawer_item_users)
-                .withIcon(getResources().getDrawable(R.drawable.users_icon))
-                .withTextColor(getResources().getColor(R.color.colorText))
-                .withOnDrawerItemClickListener((view, position, drawerItem) -> setFragment(UserFragment.class));
-
-        drawerBuilder.addDrawerItems(
-                itemHome, itemAbout, itemContact, itemShare,
-                new DividerDrawerItem(),
-                itemTips, itemChat, itemUsers,
-                new DividerDrawerItem());
-    }
-
-    private void addAuthDrawerItems(DrawerBuilder drawerBuilder) {
         PrimaryDrawerItem itemSignIn =
                 new PrimaryDrawerItem()
                         .withName(R.string.sign_in)
@@ -221,59 +100,18 @@ public class AuthActivity extends AppCompatActivity implements TipFragment.OnLis
                         .withOnDrawerItemClickListener((view, position, drawerItem) -> setFragment(ResetPasswordFragment.class));
 
         drawerBuilder.addDrawerItems(itemSignIn, itemSignUp, itemResetPassword);
-    }
 
-    private void addAccountHeaderWithUser(DrawerBuilder drawerBuilder, AppUser user) {
-        AccountHeader headerResult = new AccountHeaderBuilder()
-                .withActivity(this)
-                .addProfiles(
-                        new ProfileDrawerItem()
-                                .withName(user.getEmail())
-                                .withEmail(user.getEmail())
-                                .withIcon(getResources().getDrawable(R.drawable.profile_icon))
-                )
-                .withTextColor(getResources().getColor(R.color.colorText))
-                .withOnAccountHeaderListener((view, profile, currentProfile) -> false)
-                .build();
-
-        drawerBuilder.withAccountHeader(headerResult);
-    }
-
-    private void addSignOutDrawerItem(DrawerBuilder drawerBuilder) {
-        PrimaryDrawerItem itemSignOut =
-                new PrimaryDrawerItem()
-                        .withName(R.string.sign_out)
-                        .withIcon(R.drawable.sign_out_icon)
-                        .withTextColor(getResources().getColor(R.color.colorText))
-                        .withOnDrawerItemClickListener((view, position, drawerItem) -> {
-                            mAuth.signOut();
-                            recreate();
-                            drawer.closeDrawer();
-                            return true;
-                        });
-
-        drawerBuilder.addDrawerItems(itemSignOut);
+        return drawerBuilder.build();
     }
 
     private boolean setFragment(Class fragmentClass) {
         try {
-            Fragment fragment = (Fragment)fragmentClass.newInstance();
-            fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+            Fragment fragment = (Fragment) fragmentClass.newInstance();
+            fragmentManager.beginTransaction().replace(R.id.flAuth, fragment).commit();
             drawer.closeDrawer();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return true;
-    }
-
-    private boolean showShareMenu() {
-        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
-        sharingIntent.setType("text/plain");
-        String shareBody = "Postanite deo Godfathers zajednice i uverite zasto smo najbolji {link ka aplikaciji}";
-        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Share subject");
-        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
-        startActivity(Intent.createChooser(sharingIntent, "Share via"));
-        drawer.closeDrawer();
         return true;
     }
 

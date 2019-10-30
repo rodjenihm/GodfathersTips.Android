@@ -12,8 +12,8 @@
     <string name="password_confirm">Confirm password</string>
 
     <string name="please_wait">Please wait</string>
-    <string name="loading_data">Loading application data…</string>
-    <string name="loading_data_error">Error loading application data…</string>
+    <string name="loading_user_data">Loading user data…</string>
+    <string name="loading_user_data_error">Error loading user data…</string>
     <string name="creating_account">Creating account…</string>
     <string name="signing_in">Signing In…</string>
     <string name="error">Error</string>

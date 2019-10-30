@@ -2,12 +2,13 @@ package com.rodjenihm.godfatherstips.model;
 
 import com.google.firebase.Timestamp;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 
-public class AppUser {
+public class AppUser implements Serializable {
     private String userId;
     private String email;
     private Date createdAt;
