@@ -3,18 +3,14 @@ package com.rodjenihm.godfatherstips.fragment;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
+import androidx.fragment.app.Fragment;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.rodjenihm.godfatherstips.R;
 import com.rodjenihm.godfatherstips.Utilities;

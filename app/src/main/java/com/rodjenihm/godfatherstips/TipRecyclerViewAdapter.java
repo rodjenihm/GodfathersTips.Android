@@ -10,8 +10,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.rodjenihm.godfatherstips.fragment.TipFragment;
 import com.rodjenihm.godfatherstips.model.Tip;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 public class TipRecyclerViewAdapter extends RecyclerView.Adapter<TipRecyclerViewAdapter.ViewHolder> {
