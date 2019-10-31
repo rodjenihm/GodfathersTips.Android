@@ -22,6 +22,7 @@ import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.rodjenihm.godfatherstips.R;
 import com.rodjenihm.godfatherstips.fragment.AboutFragment;
 import com.rodjenihm.godfatherstips.fragment.AddTipFragment;
+import com.rodjenihm.godfatherstips.fragment.ChatFragment;
 import com.rodjenihm.godfatherstips.fragment.ContactFragment;
 import com.rodjenihm.godfatherstips.fragment.HomeFragment;
 import com.rodjenihm.godfatherstips.fragment.TipFragment;
@@ -140,7 +141,8 @@ public class NavigationActivity extends AppCompatActivity implements TipFragment
                 .withEnabled(isVip || isAdmin)
                 .withName(R.string.drawer_item_chat)
                 .withIcon(getResources().getDrawable(R.drawable.chat_icon))
-                .withTextColor(getResources().getColor(R.color.colorText));
+                .withTextColor(getResources().getColor(R.color.colorText))
+                .withOnDrawerItemClickListener((view, position, drawerItem) -> setFragment(ChatFragment.class));
 
         PrimaryDrawerItem itemUsers = new PrimaryDrawerItem()
                 .withEnabled(isAdmin)
