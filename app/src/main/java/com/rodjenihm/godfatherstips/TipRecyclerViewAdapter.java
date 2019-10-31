@@ -76,6 +76,10 @@ public class TipRecyclerViewAdapter extends RecyclerView.Adapter<TipRecyclerView
                         .collection("tips")
                         .document(tipId)
                         .update("status", which + 2)
+                        .addOnSuccessListener(aVoid -> {
+                            mValues.remove(position);
+                            notifyDataSetChanged();
+                        })
                         .addOnFailureListener(e -> Toast.makeText(holder.mView.getContext(), e.getLocalizedMessage(), Toast.LENGTH_LONG).show());
             });
             builder.show();
