@@ -1,22 +1,15 @@
 package com.rodjenihm.godfatherstips.activity;
 
-import androidx.annotation.Nullable;
+import android.content.Intent;
+import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.util.Log;
-
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentChange;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -35,9 +28,6 @@ import com.rodjenihm.godfatherstips.fragment.TipFragment;
 import com.rodjenihm.godfatherstips.fragment.UserFragment;
 import com.rodjenihm.godfatherstips.model.AppUser;
 import com.rodjenihm.godfatherstips.model.Tip;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class NavigationActivity extends AppCompatActivity implements TipFragment.OnListFragmentInteractionListener, UserFragment.OnListFragmentInteractionListener {
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
