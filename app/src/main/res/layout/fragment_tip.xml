@@ -33,9 +33,17 @@
         android:id="@+id/odds"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="end"
+        android:gravity="start"
         android:textColor="@color/colorText">
 
     </TextView>
+
+    <Button
+        android:id="@+id/archive"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/archive"
+        android:visibility="gone"
+        android:layout_gravity="end" />
 
 </LinearLayout>

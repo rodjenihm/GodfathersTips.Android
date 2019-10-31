@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -71,7 +72,8 @@ public class UserRecyclerViewAdapter extends RecyclerView.Adapter<UserRecyclerVi
                             FirebaseFirestore.getInstance()
                                     .collection("roles")
                                     .document("VIP")
-                                    .update("users", FieldValue.arrayUnion(Uid));
+                                    .update("users", FieldValue.arrayUnion(Uid))
+                                    .addOnFailureListener(e -> Toast.makeText(holder.mView.getContext(), e.getLocalizedMessage(), Toast.LENGTH_LONG).show());
                         });
             } else {
                 FirebaseFirestore.getInstance()
@@ -83,7 +85,8 @@ public class UserRecyclerViewAdapter extends RecyclerView.Adapter<UserRecyclerVi
                             FirebaseFirestore.getInstance()
                                     .collection("roles")
                                     .document("VIP")
-                                    .update("users", FieldValue.arrayRemove(Uid));
+                                    .update("users", FieldValue.arrayRemove(Uid))
+                                    .addOnFailureListener(e -> Toast.makeText(holder.mView.getContext(), e.getLocalizedMessage(), Toast.LENGTH_LONG).show());
                         });
             }
         });

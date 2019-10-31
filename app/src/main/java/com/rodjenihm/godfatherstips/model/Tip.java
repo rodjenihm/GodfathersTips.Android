@@ -2,23 +2,31 @@ package com.rodjenihm.godfatherstips.model;
 
 
 public class Tip {
+    private String tipId;
     private String rivals;
     private String time;
     private String tip;
     private String odds;
-    private String status;
-    private boolean active;
+    private int status;
 
     public Tip() {
     }
 
-    public Tip(String rivals, String time, String tip, String odds, String status, boolean active) {
+    public Tip(String tipId, String rivals, String time, String tip, String odds, int status) {
+        this.tipId = tipId;
         this.rivals = rivals;
         this.time = time;
         this.tip = tip;
         this.odds = odds;
         this.status = status;
-        this.active = active;
+    }
+
+    public String getTipId() {
+        return tipId;
+    }
+
+    public void setTipId(String tipId) {
+        this.tipId = tipId;
     }
 
     public String getRivals() {
@@ -53,20 +61,18 @@ public class Tip {
         this.odds = odds;
     }
 
-    public String getStatus() {
+    public int getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 
-    public boolean isActive() {
-        return active;
-    }
 
-    public void setActive(boolean active) {
-        this.active = active;
+    public Tip withId(String tipId) {
+        this.tipId = tipId;
+        return this;
     }
 
     public Tip withRivals(String rivals) {
@@ -80,7 +86,7 @@ public class Tip {
     }
 
     public Tip withTip(String tip) {
-        this.time = tip;
+        this.tip = tip;
         return this;
     }
 
@@ -89,7 +95,7 @@ public class Tip {
         return this;
     }
 
-    public Tip withStatus(String status) {
+    public Tip withStatus(int status) {
         this.status = status;
         return this;
     }

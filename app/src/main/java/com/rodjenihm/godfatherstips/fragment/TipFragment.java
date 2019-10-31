@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.rodjenihm.godfatherstips.R;
 import com.rodjenihm.godfatherstips.TipRecyclerViewAdapter;
 import com.rodjenihm.godfatherstips.model.Tip;
@@ -29,10 +30,11 @@ public class TipFragment extends Fragment {
     private static final String ARG_COLUMN_COUNT = "column-count";
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
-    private boolean active;
+    private int status;
+    private boolean admin = false;
 
-    public TipFragment withActive(boolean active) {
-        this.active = active;
+    public TipFragment withStatus(int status) {
+        this.status = status;
         return this;
     }
 
@@ -78,22 +80,28 @@ public class TipFragment extends Fragment {
             }
 
             final List<Tip> tips = new ArrayList<>();
-            TipRecyclerViewAdapter adapter = new TipRecyclerViewAdapter(tips, mListener);
+            TipRecyclerViewAdapter adapter = new TipRecyclerViewAdapter(tips, mListener).withAdminPrivilege(admin);
             recyclerView.setAdapter(adapter);
 
-            FirebaseFirestore.getInstance().collection("tips")
-                    .whereEqualTo("active", active)
-                    .get()
-                    .addOnSuccessListener(queryDocumentSnapshots -> {
+            Query q;
+            if (status == 1) {
+                q = FirebaseFirestore.getInstance().collection("tips")
+                        .whereEqualTo("status", 1);
+            } else {
+                q = FirebaseFirestore.getInstance().collection("tips")
+                        .whereGreaterThan("status", 1);
+            }
+
+            q.get().addOnSuccessListener(queryDocumentSnapshots -> {
                         for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                            tips.add(documentSnapshot.toObject(Tip.class));
+                            Tip obj = documentSnapshot.toObject(Tip.class).withId(documentSnapshot.getId());
+                            tips.add(obj);
                             adapter.notifyDataSetChanged();
                         }
                     })
-                    .addOnFailureListener(e -> {
-                        Toast.makeText(getContext(), e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
-                    });
+                    .addOnFailureListener(e -> Toast.makeText(getContext(), e.getLocalizedMessage(), Toast.LENGTH_LONG).show());
         }
+
         return view;
     }
 
@@ -106,6 +114,11 @@ public class TipFragment extends Fragment {
             throw new RuntimeException(context.toString()
                     + " must implement OnListFragmentInteractionListener");
         }
+    }
+
+    public TipFragment withAdmin(boolean admin) {
+        this.admin = admin;
+        return this;
     }
 
     @Override

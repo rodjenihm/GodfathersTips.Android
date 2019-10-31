@@ -92,11 +92,11 @@ public class NavigationActivity extends AppCompatActivity implements TipFragment
         SecondaryDrawerItem itemTipsHot = new SecondaryDrawerItem()
                 .withEnabled(isVip || isAdmin)
                 .withLevel(4)
-                .withName(R.string.drawer_item_tips_hot)
+                .withName(R.string.drawer_item_tips_active)
                 .withTextColor(getResources().getColor(R.color.colorText))
                 .withOnDrawerItemClickListener((view, position, drawerItem) -> {
                     try {
-                        Fragment fragment = TipFragment.class.newInstance().withActive(true);
+                        Fragment fragment = TipFragment.class.newInstance().withStatus(1).withAdmin(isAdmin);
                         fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
                         drawer.closeDrawer();
                     } catch (Exception e) {
@@ -108,11 +108,11 @@ public class NavigationActivity extends AppCompatActivity implements TipFragment
         SecondaryDrawerItem itemTipsHistory = new SecondaryDrawerItem()
                 .withEnabled(isVip || isAdmin)
                 .withLevel(4)
-                .withName(R.string.drawer_item_tips_history)
+                .withName(R.string.drawer_item_tips_archive)
                 .withTextColor(getResources().getColor(R.color.colorText))
                 .withOnDrawerItemClickListener((view, position, drawerItem) -> {
                     try {
-                        Fragment fragment = TipFragment.class.newInstance().withActive(false);
+                        Fragment fragment = TipFragment.class.newInstance().withStatus(2).withAdmin(isAdmin);
                         fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
                         drawer.closeDrawer();
                     } catch (Exception e) {
