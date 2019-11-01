@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseListAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -52,16 +53,19 @@ public class ChatFragment extends Fragment {
 
             FirebaseDatabase.getInstance()
                     .getReference()
+                    .child("messages")
                     .push()
-                    .setValue(obj);
+                    .setValue(obj)
+                    .addOnFailureListener(e -> Toast.makeText(getContext(), e.getLocalizedMessage(), Toast.LENGTH_LONG).show());
 
+            input.clearFocus();
             input.setText("");
         });
 
         ListView listOfMessages = view.findViewById(R.id.list_of_messages);
 
         adapter = new FirebaseListAdapter<Message>(getActivity(), Message.class,
-                R.layout.message, FirebaseDatabase.getInstance().getReference()) {
+                R.layout.message, FirebaseDatabase.getInstance().getReference().child("messages")) {
             @Override
             protected void populateView(View v, Message model, int position) {
                 // Get references to the views of message.xml
