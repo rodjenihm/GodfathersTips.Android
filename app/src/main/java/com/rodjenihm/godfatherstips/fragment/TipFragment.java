@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.rodjenihm.godfatherstips.R;
 import com.rodjenihm.godfatherstips.TipRecyclerViewAdapter;
@@ -30,11 +29,11 @@ public class TipFragment extends Fragment {
     private static final String ARG_COLUMN_COUNT = "column-count";
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
-    private int status;
+    private Query query;
     private boolean admin = false;
 
-    public TipFragment withStatus(int status) {
-        this.status = status;
+    public TipFragment withQuery(Query query) {
+        this.query = query;
         return this;
     }
 
@@ -83,16 +82,7 @@ public class TipFragment extends Fragment {
             TipRecyclerViewAdapter adapter = new TipRecyclerViewAdapter(tips, mListener).withAdminPrivilege(admin);
             recyclerView.setAdapter(adapter);
 
-            Query q;
-            if (status == 1) {
-                q = FirebaseFirestore.getInstance().collection("tips")
-                        .whereEqualTo("status", 1);
-            } else {
-                q = FirebaseFirestore.getInstance().collection("tips")
-                        .whereGreaterThan("status", 1);
-            }
-
-            q.get().addOnSuccessListener(queryDocumentSnapshots -> {
+            query.get().addOnSuccessListener(queryDocumentSnapshots -> {
                         for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                             Tip obj = documentSnapshot.toObject(Tip.class).withId(documentSnapshot.getId());
                             tips.add(obj);

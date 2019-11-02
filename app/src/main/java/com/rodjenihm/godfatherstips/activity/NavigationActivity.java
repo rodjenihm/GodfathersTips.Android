@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -97,7 +98,9 @@ public class NavigationActivity extends AppCompatActivity implements TipFragment
                 .withTextColor(getResources().getColor(R.color.colorText))
                 .withOnDrawerItemClickListener((view, position, drawerItem) -> {
                     try {
-                        Fragment fragment = TipFragment.class.newInstance().withStatus(1).withAdmin(isAdmin);
+                        Query query = FirebaseFirestore.getInstance().collection("tips")
+                                .whereEqualTo("status", 1);
+                        Fragment fragment = TipFragment.class.newInstance().withQuery(query).withAdmin(isAdmin);
                         fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
                         drawer.closeDrawer();
                     } catch (Exception e) {
@@ -113,7 +116,9 @@ public class NavigationActivity extends AppCompatActivity implements TipFragment
                 .withTextColor(getResources().getColor(R.color.colorText))
                 .withOnDrawerItemClickListener((view, position, drawerItem) -> {
                     try {
-                        Fragment fragment = TipFragment.class.newInstance().withStatus(2).withAdmin(isAdmin);
+                        Query query = FirebaseFirestore.getInstance().collection("tips")
+                                .whereGreaterThan("status", 1);
+                        Fragment fragment = TipFragment.class.newInstance().withQuery(query).withAdmin(isAdmin);
                         fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
                         drawer.closeDrawer();
                     } catch (Exception e) {
